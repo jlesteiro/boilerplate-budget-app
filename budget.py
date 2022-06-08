@@ -3,9 +3,12 @@ class Category:
     def __init__(self, budcat):
         self.budgetCategory = budcat
         self.ledger = list()
+        self.incomes = 0
+        self.spents = 0
 
     def deposit(self, amount, description = ""):
         self.ledger.append({"amount": amount, "description": description})
+        self.incomes += amount
 
     def get_balance(self):
         balance = 0
@@ -22,6 +25,7 @@ class Category:
     def withdraw(self, amount, description = ""):
         if self.check_funds(amount):
             self.ledger.append({"amount": (amount * -1), "description": description})
+            self.spents += amount
             return True
         else:
             return False
@@ -55,11 +59,34 @@ class Category:
         return repr_string
 
 def create_spend_chart(categories):
-    
+    ancho = len(categories)
+    histogram = str()
+    spents_percent = list()
+    histogram += "Percentage spent by category\n"
 
+    for category in categories:
+        percent = int(category.spents / (category.incomes) * 100)
+        if  (percent/10 - int(percent/10)) >= 0.5:
+            percent = (int(percent/10) + 1) *10
+        else:
+            percent = int(percent/10) *10
+        spents_percent.append(percent)
+        # print("En la cat ", category.budgetCategory, " se gastó el ", percent, " porciento")
+
+    for i in [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0]:
+        histogram += " " * (3 - len(str(i))) + str(i) + "|"
+        for percent in spents_percent:
+            if percent < i:
+                histogram += "   "
+            else:
+                histogram += " o "
+        histogram += "\n"
+
+    histogram += " " * 4 + "---" * len(categories) + "-\n"
     
+    # me falta imprimir los nombres en el histograma
     
-    return 1
+    return histogram
 
 
 
@@ -78,3 +105,5 @@ auto.withdraw(15)
 
 print(food)
 print(clothing)
+
+print(create_spend_chart([food, clothing, auto]))
