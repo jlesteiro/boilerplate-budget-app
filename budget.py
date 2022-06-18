@@ -100,3 +100,4 @@ def create_spend_chart(categories):
             histogram += name[i:i+1] + " " * 2
     
     return histogram 
+    
